@@ -14,7 +14,7 @@ Zanim wpiszecie jakąkolwiek komendę, **musicie dodać plik ze zmiennymi środo
 2. Wrzućcie ten plik **bezpośrednio do głównego folderu projektu** (dokładnie tam, gdzie znajduje się plik `docker-compose.yml`).
 3. Plik ten zawiera niezbędne hasła do bazy danych oraz klucz do szyfrowania tokenów JWT. 
 
-> **CRITICAL WARNING:** Nigdy nie uruchamiajcie Dockera przed dodaniem tego pliku! Jeśli to zrobicie, baza danych MariaDB zainicjuje się z pustymi hasłami i zablokuje możliwość logowania dla API. Wymusi to na Was ręczne czyszczenie wolumenów poleceniem `docker compose down -v`.
+> **CRITICAL WARNING:** Nigdy nie uruchamiajcie Dockera przed dodaniem tego pliku! Jeśli to zrobicie, baza danych MariaDB zainicjuje się z pustymi hasłami i zablokuje możliwość logowania dla API. Wymusi to na Was ręczne czyszczenie wolumenów poleceniem `docker-compose down -v`.
 
 ---
 
