@@ -54,7 +54,7 @@ docker-compose up -d
 Aby upewnić się, że backend wystartował prawidłowo (i aby odczytać wygenerowane dane testowe), sprawdźcie logi głównego API:
 
 ```bash
-docker compose logs -f main-api
+docker-compose logs -f main-api
 
 ```
 
