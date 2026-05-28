@@ -1,0 +1,61 @@
+services:
+  # 1. BAZA DANYCH
+  mariadb:
+    image: mariadb:lts
+    container_name: ticketing-mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ticketing_db
+      MARIADB_USER: ticketing_api_user
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  # 2. BROKER WIADOMOŚCI
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ticketing-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # 3. GŁÓWNE API (Pobierane z GHCR)
+  main-api:
+    image: ghcr.io/porzeraklon/ticketing-main-api:latest
+    container_name: ticketing-main-api
+    restart: always
+    ports:
+      - "5000:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Port=3306;Database=ticketing_db;User Id=ticketing_api_user;Password=${DB_PASSWORD};
+      - RabbitMQ__HostName=rabbitmq
+      - Jwt__Key=${JWT_SECRET}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AllowedOrigins=http://ticketing-frontend.local;https://mojadomena.pl
+    depends_on:
+      - mariadb
+      - rabbitmq
+
+  # 4. WORKER SERVICE (Pobierane z GHCR)
+  worker-service:
+    image: ghcr.io/porzeraklon/ticketing-worker-service:latest
+    container_name: ticketing-worker-service
+    restart: always
+    ports:
+      - "5001:8080"
+    environment:
+      - RabbitMQ__HostName=rabbitmq
+      - Jwt__Key=${JWT_SECRET}
+      - ASPNETCORE_ENVIRONMENT=Development
+      # DODANO: Wstrzykujemy listę dozwolonych adresów Frontendowych
+      - AllowedOrigins=http://ticketing-frontend.local;https://mojadomena.pl
+    depends_on:
+      - rabbitmq
+      - main-api
+
+volumes:
+  mariadb_data:
