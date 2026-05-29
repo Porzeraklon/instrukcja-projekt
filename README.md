@@ -143,23 +143,6 @@ Poniżej znajduje się zestawienie najważniejszych endpointów wystawionych prz
 
  |
 
-### 🎟️ Zarządzanie Zgłoszeniami (`/api/Tickets`)
-
-| Metoda | Endpoint | Wymagane Role | Opis i Logika Biznesowa |
-| --- | --- | --- | --- |
-| **GET** | `/?includeArchived={bool}` | <br>**Admin** 
-
- | Pobiera listę zgłoszeń (domyślnie tylko aktywne, bez zarchiwizowanych, chyba że podano parametr `includeArchived=true`). W wynikach dołączone są dane twórcy (Email, ContactInfo).
-
- |
-| **POST** | `/` | Zalogowany użytkownik | Tworzy nowe zgłoszenie na podstawie tokenu (identyfikuje twórcę). Zgłoszenie natychmiast trafia do bazy , a API publikuje zdarzenie `TicketCreatedEvent` na kolejkę RabbitMQ dla serwisu powiadomień.
-
- |
-| **PATCH** | `/{id}/status` | <br>**Admin** 
-
- | Zmienia status ticketa. **Automatyzacja:** Jeśli nowo ustawiony status to `TicketStatus.Closed`, system automatycznie oznacza zgłoszenie jako zarchiwizowane (`IsArchived = true`).
-
- |
 
  ### 🎟️ Zarządzanie Zgłoszeniami (`/api/Tickets`)
 
